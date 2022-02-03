@@ -7,9 +7,9 @@ We use [ENZYMES dataset](https://paperswithcode.com/dataset/enzymes) that contai
 
 **Centralized Experiment**
 
--Training Set: 500 graphs
+- Training Set: 500 graphs
 
--Testing Set: 100 graphs
+- Testing Set: 100 graphs
 
 Results after 70 epochs of training:
 
@@ -17,11 +17,11 @@ Results after 70 epochs of training:
 
 **Federated Experiment**
 
--Clients: 3
+- Clients: 3
 
--Training Set: 150 graphs/per client
+- Training Set: 150 graphs/per client
 
--Testing Set: 150 graphs
+- Testing Set: 150 graphs
 
 Results after 10 federated rounds:
 
