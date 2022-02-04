@@ -25,4 +25,4 @@ Results after 70 epochs of training:
 
 Results after 10 federated rounds:
 
-![Centralized Results](/Simple_Federated_GCN/result_images/centralized_experiment1.png)
+![Centralized Results](/Simple_Federated_GCN/result_images/federated_experiment1.png)
