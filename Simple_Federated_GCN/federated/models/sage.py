@@ -5,9 +5,9 @@ from torch_geometric.nn import SAGEConv
 from torch_geometric.nn import global_mean_pool
 
 
-class GCN(torch.nn.Module):
+class SAGE(torch.nn.Module):
     def __init__(self, hidden_channels,dataset):
-        super(GCN, self).__init__()
+        super(SAGE, self).__init__()
         torch.manual_seed(12345)
         self.conv1 = SAGEConv(dataset.num_node_features, hidden_channels)
         self.conv2 = SAGEConv(hidden_channels, hidden_channels)

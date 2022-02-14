@@ -3,6 +3,8 @@ from torch_geometric.datasets import TUDataset
 from torch_geometric.loader import DataLoader
 import matplotlib.pyplot as plt
 from models.gcn import GCN
+from models.sage import SAGE
+import sys
 from helpers import trainer, tester
 from server import perform_federated_round
 
@@ -54,7 +56,13 @@ for epoch in range(1, 70):
     #print("Client3:")
     #print(f'Epoch: {epoch:03d}, Train Acc: {train_acc_3:.4f}, Test Acc: {test_acc_3:.4f}')
 
-server_model = GCN(hidden_channels=16,dataset=dataset)
+if sys.argv[1].casefold() == "GCN":
+    server_model = GCN(hidden_channels=16,dataset=dataset)
+elif sys.argv[1].casefold() == "GraphSAGE":
+    server_model = GCN(hidden_channels=16,dataset=dataset)
+else:
+    print("Model does not exist! Please select GCN or GraphSAGE")
+    
 server_accuracy_per_round = []
 
 for round_id in range(1,11):
