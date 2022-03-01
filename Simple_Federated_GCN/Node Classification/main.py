@@ -26,3 +26,9 @@ print(f'Number of edges: {data.num_edges}')
 #Split Graph and creating client datasets
 from helpers import split_communities
 C1, C2, C3 = split_communities(data)
+
+#Add one-hop neighborhood from other clients
+from helpers import add_one_hop_neighbors
+data1, data2, data3, trusted_nodes = add_one_hop_neighbors(data, C1, C2, C3)
+
+#Create train, test masks
