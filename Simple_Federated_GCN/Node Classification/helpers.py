@@ -49,10 +49,33 @@ def add_one_hop_neighbors(data,C1,C2,C3):
 
     return data1, data2, data3, trusted_nodes
 
-def train_test_split(data):
-    mask = torch.randn((data1.num_nodes)) < 0.7
+def train_test_split(data, trusted_nodes, client_id):
+    mask = torch.randn((data.num_nodes)) < 0.7
     nmask = torch.logical_not(mask)
-    mask[data1.num_nodes - len(trusted_nodes1):] = False
-    nmask[data1.num_nodes - len(trusted_nodes1):] = False
-    train_mask_1 = mask
-    test_mask_1 = nmask
+    mask[data.num_nodes - len(trusted_nodes[client_id]):] = False
+    nmask[data.num_nodes - len(trusted_nodes[client_id]):] = False
+    train_mask = mask
+    test_mask = nmask
+    data.train_mask = train_mask
+    data.test_mask = test_mask
+    return data
+
+def trainer(model,optimizer,criterion, data):
+    model.train()
+    optimizer.zero_grad()  # Clear gradients.
+    out = model(data.x, data.edge_index)  # Perform a single forward pass.
+    loss = criterion(out[data.train_mask], data.y[data.train_mask])  # Compute the loss solely based on the training nodes.
+    loss.backward()  # Derive gradients.
+    optimizer.step()  # Update parameters based on gradients.
+    pred = out.argmax(dim=1)  # Use the class with highest probability.
+    train_correct = pred[data.train_mask] == data.y[data.train_mask]  # Check against ground-truth labels.
+    train_acc = int(train_correct.sum()) / int(data.train_mask.sum())  # Derive ratio of correct predictions.
+    return loss, train_acc
+
+def tester(model, data):
+    model.eval()
+    out = model(data.x, data.edge_index)
+    pred = out.argmax(dim=1)  # Use the class with highest probability.
+    test_correct = pred[data.test_mask] == data.y[data.test_mask]  # Check against ground-truth labels.
+    test_acc = int(test_correct.sum()) / int(data.test_mask.sum())  # Derive ratio of correct predictions.
+    return test_acc
