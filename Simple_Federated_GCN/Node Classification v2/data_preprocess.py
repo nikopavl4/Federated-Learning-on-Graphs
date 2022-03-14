@@ -21,7 +21,7 @@ def load_data():
     # Gather some statistics about the graph.
     print(f'Number of nodes: {data.num_nodes}')
     print(f'Number of edges: {data.num_edges}')
-    return to_networkx(data, to_undirected=True, node_attrs=['x','y'])
+    return to_networkx(data, to_undirected=True, node_attrs=['x','y']), dataset.num_features, dataset.num_classes
 
 def split_communities(G):
     communities = sorted(nx.community.asyn_fluidc(G, 3, max_iter = 5000, seed= 12345))
