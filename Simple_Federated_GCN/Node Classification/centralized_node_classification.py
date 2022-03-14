@@ -17,6 +17,13 @@ def run_centralized_node_classifcation(dataset, data):
         val_losses.append(test_acc)
         print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Train Accuracy: {train_acc:.4f}, Test Accuracy: {test_acc:.4f}')
     
+    model.eval()
+    out = model(data.x, data.edge_index)
+    pred = out.argmax(dim=1)  # Use the class with highest probability.
+    from sklearn.metrics import confusion_matrix
+    conf_matrix = confusion_matrix(data.y[data.test_mask], pred[data.test_mask])
+    print(conf_matrix)
+
     plt.figure(figsize=(10,5))
     plt.title("Training and Testing Accuracy")
     plt.plot(val_losses,label="Test")

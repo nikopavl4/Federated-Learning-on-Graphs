@@ -1,6 +1,7 @@
 from torch_geometric.utils import to_networkx, from_networkx
 import networkx as nx
 import torch
+import numpy as np
 torch.manual_seed(12345)
 
 def split_communities(data):
@@ -79,3 +80,43 @@ def tester(model, data):
     test_correct = pred[data.test_mask] == data.y[data.test_mask]  # Check against ground-truth labels.
     test_acc = int(test_correct.sum()) / int(data.test_mask.sum())  # Derive ratio of correct predictions.
     return test_acc
+
+class EarlyStopping:
+    def __init__(self, patience=10, change=0., path='euclid_model', mode='minimize'):
+        """
+        patience: Waiting threshold for val loss to improve.
+        change: Minimum change in the model's quality.
+        path: Path for saving the model to.
+        """
+        self.patience = patience
+        self.change = change
+        self.counter = 0
+        self.best_score = None
+        self.early_stop = False
+        self.val_loss_min = np.Inf
+        self.path = path
+        self.mode = mode
+
+    def __call__(self, val_loss, model):
+        score = -val_loss
+
+        if self.best_score is None:
+            self.best_score = score
+            #self.save_checkpoint(val_loss, model)
+
+        elif score < self.best_score + self.change and self.mode == "minimize":
+            self.counter += 1
+
+            print(f'EarlyStopping counter: {self.counter} out of {self.patience}')
+            if self.counter >= self.patience:
+                self.early_stop = True
+        elif score > self.best_score + self.change and self.mode == "maximize":
+            self.counter += 1
+
+            print(f'EarlyStopping counter: {self.counter} out of {self.patience}')
+            if self.counter >= self.patience:
+                self.early_stop = True
+        else:
+            self.best_score = score
+            #self.save_checkpoint(val_loss, model)
+            self.counter = 0
