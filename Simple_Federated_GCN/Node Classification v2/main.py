@@ -31,26 +31,30 @@ from Server import Aggregation_Server
 MyServer = Aggregation_Server()
 MyServer.set_model(copy.deepcopy(model))
 
+res=0
 localdraw1 = []
 localdraw2 = []
 localdraw3 = []
 serverdraw = []
 #Federated Learning
-for round in range(10):
+for round in range(100):
     #Train Local Models
     Client1.train_local_model(epochs=50)
     Client2.train_local_model(epochs=50)
     Client3.train_local_model(epochs=50)
+
+    # if round == 0:
+    #     res = (tester(Client3.model, Client1) +tester(Client3.model, Client2) + tester(Client3.model, Client3))/3
+    #     localdraw1.append(res)
+    # else:
+    #     localdraw1.append(res)
 
     localdraw1.append(tester(Client1.model, Client1))
     localdraw2.append(tester(Client2.model, Client2))
     localdraw3.append(tester(Client3.model, Client3))
 
     #FedAvg Local Models on Server
-    mymodel = MyServer.perform_fed_avg(Client1.model, Client2.model, Client3.model)
-    Client1.model = copy.deepcopy(mymodel)
-    Client2.model = copy.deepcopy(mymodel)
-    Client3.model = copy.deepcopy(mymodel)
+    Client1.model, Client2.model, Client3.model= MyServer.perform_fed_avg(Client1.model, Client2.model, Client3.model)
 
     #Test Server Model on every clients data
     server_acc = (tester(MyServer.model, Client1) +tester(MyServer.model, Client2) + tester(MyServer.model, Client3))/3

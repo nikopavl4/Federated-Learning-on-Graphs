@@ -11,4 +11,7 @@ class Aggregation_Server:
         for param_tensor in model1.state_dict():
             avg = (model1.state_dict()[param_tensor] + model2.state_dict()[param_tensor] + model3.state_dict()[param_tensor])/3
             self.model.state_dict()[param_tensor].copy_(avg)
-        return self.model
+            model1.state_dict()[param_tensor].copy_(avg)
+            model2.state_dict()[param_tensor].copy_(avg)
+            model3.state_dict()[param_tensor].copy_(avg)
+        return model1, model2, model3
