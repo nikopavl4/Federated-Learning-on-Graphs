@@ -43,7 +43,7 @@ def split_communities(G):
 
 from Client import Client
 def create_clients(G1,G2,G3):
-    Client1 = Client(1,nx.adjacency_matrix(G1),nx.get_node_attributes(G1, "x"),nx.get_node_attributes(G1, "y"))
-    Client2 = Client(2,nx.adjacency_matrix(G2),nx.get_node_attributes(G2, "x"),nx.get_node_attributes(G2, "y"))
-    Client3 = Client(3,nx.adjacency_matrix(G3),nx.get_node_attributes(G3, "x"),nx.get_node_attributes(G3, "y"))
+    Client1 = Client(1,nx.to_numpy_matrix(G1),nx.get_node_attributes(G1, "x"),nx.get_node_attributes(G1, "y"))
+    Client2 = Client(2,nx.to_numpy_matrix(G2),nx.get_node_attributes(G2, "x"),nx.get_node_attributes(G2, "y"))
+    Client3 = Client(3,nx.to_numpy_matrix(G3),nx.get_node_attributes(G3, "x"),nx.get_node_attributes(G3, "y"))
     return Client1, Client2, Client3

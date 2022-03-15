@@ -52,7 +52,6 @@ def train(epoch):
           'loss_train: {:.4f}'.format(loss_train.item()),
           'acc_train: {:.4f}'.format(acc_train.item()),
           'time: {:.4f}s'.format(time.time() - t))
-    return 
 
 #Tester function
 def test():
