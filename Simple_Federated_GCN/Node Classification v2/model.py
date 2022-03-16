@@ -30,9 +30,10 @@ class GraphConvolution(Module):
         if self.bias is not None:
             self.bias.data.uniform_(-stdv, stdv)
 
-    def forward(self, input, adj):
-        support = torch.mm(input, self.weight)
-        output = torch.mm(adj, support)
+    def forward(self, MyMachine, id, label):
+        # support = torch.mm(input, self.weight)
+        # output = torch.mm(adj, support)
+        output = MyMachine.compute_safe_convolution(id, self.weight, label)
         if self.bias is not None:
             return output + self.bias
         else:
@@ -52,8 +53,8 @@ class GCN(nn.Module):
         self.gc2 = GraphConvolution(nhid, nclass)
         self.dropout = dropout
 
-    def forward(self, x, adj):
-        x = F.relu(self.gc1(x, adj))
+    def forward(self, MyMachine, id):
+        x = F.relu(self.gc1(MyMachine, id, 1))
         x = F.dropout(x, self.dropout, training=self.training)
-        x = self.gc2(x, adj)
+        x = self.gc2(MyMachine, id, 2)
         return F.log_softmax(x, dim=1)

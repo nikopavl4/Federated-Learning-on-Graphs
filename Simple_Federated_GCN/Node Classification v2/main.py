@@ -1,11 +1,12 @@
 ### A federated learning Example-Setting for Node Classification using FHE to avoid data leakage between Clients
 import torch, copy,random
+import networkx as nx
 import matplotlib.pyplot as plt
 from helpers import tester
 from data_preprocess import load_data, split_communities, create_clients
 torch.manual_seed(12345)
 random.seed(12345)
-global_graph, num_of_features, num_of_classes,num_of_nodes = load_data()
+global_graph, num_of_features, num_of_classes,num_of_nodes, prim = load_data()
 G1, G2, G3 = split_communities(global_graph)
 
 Client1, Client2, Client3 = create_clients(G1,G2,G3)
@@ -31,17 +32,30 @@ from Server import Aggregation_Server
 MyServer = Aggregation_Server()
 MyServer.set_model(copy.deepcopy(model))
 
+#Create and initialize Security Machine
+from SecMachine import SecMachine
+MyMachine = SecMachine(nx.to_numpy_matrix(prim))
+MyMachine.add_secure_client(Client1)
+MyMachine.add_secure_client(Client2)
+MyMachine.add_secure_client(Client3)
+MyMachine.find_connections(1,2)
+MyMachine.find_connections(1,3)
+MyMachine.find_connections(2,1)
+MyMachine.find_connections(2,3)
+MyMachine.find_connections(3,1)
+MyMachine.find_connections(3,2)
+
 res=0
 localdraw1 = []
 localdraw2 = []
 localdraw3 = []
 serverdraw = []
 #Federated Learning
-for round in range(100):
+for round in range(10):
     #Train Local Models
-    Client1.train_local_model(epochs=50)
-    Client2.train_local_model(epochs=50)
-    Client3.train_local_model(epochs=50)
+    Client1.train_local_model(epochs=50, machine = MyMachine)
+    Client2.train_local_model(epochs=50, machine = MyMachine)
+    Client3.train_local_model(epochs=50, machine = MyMachine)
 
     # if round == 0:
     #     res = (tester(Client3.model, Client1) +tester(Client3.model, Client2) + tester(Client3.model, Client3))/3
@@ -49,15 +63,15 @@ for round in range(100):
     # else:
     #     localdraw1.append(res)
 
-    localdraw1.append(tester(Client1.model, Client1))
-    localdraw2.append(tester(Client2.model, Client2))
-    localdraw3.append(tester(Client3.model, Client3))
+    localdraw1.append(tester(Client1.model, Client1, MyMachine))
+    localdraw2.append(tester(Client2.model, Client2, MyMachine))
+    localdraw3.append(tester(Client3.model, Client3, MyMachine))
 
     #FedAvg Local Models on Server
     Client1.model, Client2.model, Client3.model= MyServer.perform_fed_avg(Client1.model, Client2.model, Client3.model)
 
     #Test Server Model on every clients data
-    server_acc = (tester(MyServer.model, Client1) +tester(MyServer.model, Client2) + tester(MyServer.model, Client3))/3
+    server_acc = (tester(MyServer.model, Client1, MyMachine) +tester(MyServer.model, Client2, MyMachine) + tester(MyServer.model, Client3, MyMachine))/3
     print("Server Accuracy")
     print(server_acc.item())
     serverdraw.append(server_acc.item())

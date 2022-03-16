@@ -18,13 +18,14 @@ class Client:
         self.model = model
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.01, weight_decay=5e-4)
 
-    def train_local_model(self, epochs):
+    def train_local_model(self, epochs, machine):
         labels = torch.tensor(list(self.y.values()))
         print(f'Client ID: {self.id:02d} Starting Local Training')
         for epoch in range(epochs):
             self.model.train()
             self.optimizer.zero_grad()
-            output = self.model(torch.tensor(list(self.x.values())), torch.tensor(self.A.astype(np.float32)))
+            #output = self.model(torch.tensor(list(self.x.values())), torch.tensor(self.A.astype(np.float32)))
+            output = self.model(machine, self.id)
             loss_train = F.nll_loss(output[self.train_mask], labels[self.train_mask])
             acc_train = accuracy(output[self.train_mask], labels[self.train_mask])
             loss_train.backward()

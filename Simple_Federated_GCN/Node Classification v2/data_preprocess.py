@@ -8,6 +8,7 @@ def load_data():
     #Import and Examine Dataset
     dataset = Planetoid(root='data/Planetoid', name='Cora', transform=NormalizeFeatures())
     #dataset = BAShapes(connection_distribution='uniform')
+    #dataset = KarateClub()
 
     print(f'Dataset: {dataset}:')
     print('======================')
@@ -26,7 +27,7 @@ def load_data():
     G = to_networkx(data, to_undirected=True, node_attrs=['x','y'])
     Gcc = sorted(nx.connected_components(G), key=len, reverse=True)
     G0 = G.subgraph(Gcc[0])
-    return G0, dataset.num_features, dataset.num_classes, G0.number_of_nodes()
+    return G0, dataset.num_features, dataset.num_classes, G0.number_of_nodes(), G
 
 def split_communities(G):
     communities = sorted(nx.community.asyn_fluidc(G, 3, max_iter = 5000, seed= 12345))

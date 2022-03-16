@@ -18,10 +18,10 @@ def accuracy(output, labels):
     return correct / len(labels)
 
 #Universal Tester function
-def tester(model, Client):
+def tester(model, Client, machine):
         labels = torch.tensor(list(Client.y.values()))
         model.eval()
-        output = model(torch.tensor(list(Client.x.values())), torch.tensor(Client.A.astype(np.float32)))
+        output = model(machine, Client.id)
         acc_test = accuracy(output[Client.test_mask], labels[Client.test_mask])
         print("Test set results:","accuracy= {:.4f}".format(acc_test.item()))
         pred = output.argmax(dim=1)
