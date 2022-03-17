@@ -58,7 +58,7 @@ for round in range(10):
     Client3.train_local_model(epochs=50, machine = MyMachine)
 
     # if round == 0:
-    #     res = (tester(Client3.model, Client1) +tester(Client3.model, Client2) + tester(Client3.model, Client3))/3
+    #     res = (tester(Client2.model, Client1, MyMachine) +tester(Client2.model, Client2, MyMachine) + tester(Client2.model, Client3, MyMachine))/3
     #     localdraw1.append(res)
     # else:
     #     localdraw1.append(res)
@@ -76,8 +76,10 @@ for round in range(10):
     print(server_acc.item())
     serverdraw.append(server_acc.item())
 
+#print(res)
 plt.figure(figsize=(10,5))
 plt.title("Testing Accuracy per Federated Round")
+#plt.title("Federated vs Centralized Learning")
 plt.plot(localdraw1,label="Client1")
 plt.plot(localdraw2,label="Client2")
 plt.plot(localdraw3,label="Client3")
