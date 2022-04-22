@@ -35,7 +35,7 @@ class SecMachine:
         counter = 0
         for node in nodes1:
             neighborhood = np.nonzero(self.global_map[node][0])[1]
-            #print(neighborhood)
+            print(neighborhood)
             for j in neighborhood:
                 if j in nodes2:
                     self.maps[id1] = update_adjacency_matrix(self.maps[id1], counter)
