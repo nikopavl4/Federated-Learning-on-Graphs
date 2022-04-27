@@ -1,7 +1,6 @@
 import torch
 
-def trainer(model,train_loader):
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+def trainer(model,optimizer,train_loader):
     criterion = torch.nn.CrossEntropyLoss()
     model.train()
     for data in train_loader:  # Iterate in batches over the training dataset.
