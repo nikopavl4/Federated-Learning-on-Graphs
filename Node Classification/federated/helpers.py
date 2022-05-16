@@ -4,62 +4,55 @@ import torch
 import numpy as np
 torch.manual_seed(12345)
 
-def split_communities(data):
+def split_communities(data, clients):
     G = to_networkx(data, to_undirected=True, node_attrs=['x','y'])
-    communities = sorted(nx.community.asyn_fluidc(G, 3, max_iter = 5000, seed= 12345))
+    communities = sorted(nx.community.asyn_fluidc(G, clients, max_iter = 5000, seed= 12345))
 
     node_groups = []
     for com in communities:
         node_groups.append(list(com))   
+    list_of_clients = []
 
-    C1 = G.subgraph(node_groups[0]).copy()
-    C2 = G.subgraph(node_groups[1]).copy()
-    C3 = G.subgraph(node_groups[2]).copy()
+    for i in range(clients):
+        list_of_clients.append(G.subgraph(node_groups[i]).copy())
 
-    return C1, C2, C3
+    return list_of_clients
 
-def find_inter_cluster_edges(G,cluster1,cluster2,cluster3):
+def find_inter_cluster_edges(G,client_graphs, i):
     trusted_nodes = []
-    H = cluster1.copy()
-    for node in list(cluster2.nodes(data=True)):
-        for neighbor in G.neighbors(node[0]):
-            if cluster1.has_node(neighbor) and (not H.has_node(node[0])):
-                H.add_node(node[0], x = node[1]['x'], y = node[1]['y'])
-                H.add_edge(node[0], neighbor)
-                trusted_nodes.append(node[0])
+    H = client_graphs[i].copy()
 
-    for node in list(cluster3.nodes(data=True)):
-        for neighbor in G.neighbors(node[0]):
-            if cluster1.has_node(neighbor) and (not H.has_node(node[0])):
-                H.add_node(node[0], x = node[1]['x'], y = node[1]['y'])
-                H.add_edge(node[0],neighbor)
-                trusted_nodes.append(node[0])
+    for k in range(len(client_graphs)):
+        if (k!=i):
+            for node in list(client_graphs[k].nodes(data=True)):
+                for neighbor in G.neighbors(node[0]):
+                    if client_graphs[i].has_node(neighbor) and (not H.has_node(node[0])):
+                        H.add_node(node[0], x = node[1]['x'], y = node[1]['y'])
+                        H.add_edge(node[0], neighbor)
+                        trusted_nodes.append(node[0])
     return H, trusted_nodes
         
-def add_one_hop_neighbors(data,C1,C2,C3):
+def add_one_hop_neighbors(data, client_graphs):
     G = to_networkx(data, to_undirected=True, node_attrs=['x','y'])
-    H1, trusted_nodes1 = find_inter_cluster_edges(G, C1, C2, C3)
-    H2, trusted_nodes2 = find_inter_cluster_edges(G, C2, C1, C3)
-    H3, trusted_nodes3 = find_inter_cluster_edges(G, C3, C1, C2)
+    client_data = []
+    trusted_nodes = []
+    for i in range(len(client_graphs)):
+        H, trusted_nodes = find_inter_cluster_edges(G, client_graphs, i)
+        client_data.append(from_networkx(H))
+        trusted_nodes.append(trusted_nodes)
 
-    data1 = from_networkx(H1)
-    data2 = from_networkx(H2)
-    data3 = from_networkx(H3)
-    
-    trusted_nodes = [trusted_nodes1, trusted_nodes2, trusted_nodes3]
+    return client_data, trusted_nodes
 
-    return data1, data2, data3, trusted_nodes
-
-def train_test_split(data, trusted_nodes, client_id):
-    mask = torch.randn((data.num_nodes)) < 0.7
-    nmask = torch.logical_not(mask)
-    mask[data.num_nodes - len(trusted_nodes[client_id]):] = False
-    nmask[data.num_nodes - len(trusted_nodes[client_id]):] = False
-    train_mask = mask
-    test_mask = nmask
-    data.train_mask = train_mask
-    data.test_mask = test_mask
-    return data
+# def train_test_split(data, trusted_nodes, client_id):
+#     mask = torch.randn((data.num_nodes)) < 0.7
+#     nmask = torch.logical_not(mask)
+#     mask[data.num_nodes - len(trusted_nodes[client_id]):] = False
+#     nmask[data.num_nodes - len(trusted_nodes[client_id]):] = False
+#     train_mask = mask
+#     test_mask = nmask
+#     data.train_mask = train_mask
+#     data.test_mask = test_mask
+#     return data
 
 def trainer(model,optimizer,criterion, data):
     model.train()

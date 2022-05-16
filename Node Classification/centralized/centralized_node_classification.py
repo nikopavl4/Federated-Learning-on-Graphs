@@ -1,7 +1,7 @@
 import torch
 import matplotlib.pyplot as plt
 import argparse
-from torch_geometric.datasets import BAShapes, Planetoid, KarateClub
+from torch_geometric.datasets import Planetoid
 import torch_geometric.transforms as T
 from helpers import trainer, tester, simple_train_test_split
 from model import GCN, SAGE
@@ -13,7 +13,7 @@ np.random.seed(12345)
 parser = argparse.ArgumentParser(description='Insert Arguments')
 
 parser.add_argument('--model', type=str, default="gcn", help='GNN used in training')
-parser.add_argument("--dataset", type=str, default="pubmed", help="dataset used for training")
+parser.add_argument("--dataset", type=str, default="cora", help="dataset used for training")
 parser.add_argument("--split", type=float, default=0.6, help="test/train dataset split percentage")
 parser.add_argument("--batch_size", type=int, default=16, help="input batch size for training (default: 16)")
 parser.add_argument("--hidden_channels", type=int, default=16, help="size of GNN hidden layer")
@@ -33,7 +33,6 @@ else:
     print("No such dataset!")
     exit()
 
-print()
 print(f'Dataset: {dataset}:')
 print('====================')
 print(f'Number of graphs: {len(dataset)}')
