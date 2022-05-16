@@ -13,7 +13,7 @@ We use [ENZYMES dataset](https://paperswithcode.com/dataset/enzymes) that contai
 
 Results after 70 epochs of training:
 
-![Centralized Results](/Simple_Federated_GCN/result_images/centralized_experiment1.png)
+![Centralized Results](/result_images/centralized_experiment1.png)
 
 **Federated Experiment**
 
