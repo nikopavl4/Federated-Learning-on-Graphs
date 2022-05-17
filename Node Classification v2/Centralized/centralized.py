@@ -1,6 +1,7 @@
 import time,random
 import torch
 import torch.nn.functional as F
+import argparse
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
@@ -11,13 +12,23 @@ torch.manual_seed(12345)
 random.seed(12345)
 np.random.seed(12345)
 
+parser = argparse.ArgumentParser(description='Insert Arguments')
+
+parser.add_argument("--dataset", type=str, default="cora", help="dataset used for training")
+parser.add_argument("--split", type=float, default=0.6, help="test/train dataset split percentage")
+parser.add_argument("--hidden_channels", type=int, default=16, help="size of GNN hidden layer")
+parser.add_argument("--learning_rate", type=float, default=0.01, help="learning rate for training")
+parser.add_argument("--epochs", type=int, default=50, help="epochs for training")
+
+args = parser.parse_args()
+
 #Load Dataset using Pytorch Geometric. In case of non-connected components we take the giant component.
-global_graph, num_of_features, num_of_classes, num_of_nodes = load_data()
+global_graph, num_of_features, num_of_classes, num_of_nodes = load_data(args)
 
 #Create GCN model based on Kipf original paper/code
 from model import GCN
-model = GCN(nfeat=num_of_features, nhid=16, nclass=num_of_classes, dropout=0.5)
-optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=5e-4)
+model = GCN(nfeat=num_of_features, nhid=args.hidden_channels, nclass=num_of_classes, dropout=0.5)
+optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate, weight_decay=5e-4)
 
 #Create our unique Client with his characteristics
 from Client import Client
@@ -26,6 +37,7 @@ Client0 = Client(0,nx.to_numpy_matrix(global_graph),nx.get_node_attributes(globa
 #Create train-test mask with 70-20 split
 train_mask = torch.randn((num_of_nodes)) < 0.7
 test_mask = torch.logical_not(train_mask)
+
 
 labels = torch.tensor(list(Client0.y.values()))
 draw_acc = []
@@ -70,7 +82,7 @@ def test():
 
 # Train model
 t_total = time.time()
-for epoch in range(101):
+for epoch in range(args.epochs+1):
     train(epoch)
 print("Optimization Finished!")
 print("Total time elapsed: {:.4f}s".format(time.time() - t_total))

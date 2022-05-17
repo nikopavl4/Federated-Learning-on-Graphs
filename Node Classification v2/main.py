@@ -2,60 +2,68 @@
 import torch, copy,random
 import networkx as nx
 import matplotlib.pyplot as plt
+import argparse
 from helpers import tester
 from data_preprocess import load_data, split_communities, create_clients
 torch.manual_seed(12345)
 random.seed(12345)
-global_graph, num_of_features, num_of_classes,num_of_nodes, prim = load_data()
-G1, G2, G3 = split_communities(global_graph)
 
-Client1, Client2, Client3 = create_clients(G1,G2,G3)
 
-#Create Global and Local Models
-from model import GCN
-model = GCN(nfeat=num_of_features, nhid=16, nclass=num_of_classes, dropout=0.5)
+parser = argparse.ArgumentParser(description='Insert Arguments')
 
-#Assign Model, Optimizer to Clients
-Client1.set_model(copy.deepcopy(model))
-Client2.set_model(copy.deepcopy(model))
-Client3.set_model(copy.deepcopy(model))
+parser.add_argument("--dataset", type=str, default="cora", help="dataset used for training")
+parser.add_argument("--clients", type=int, default=3, help="number of clients")
+parser.add_argument("--split", type=float, default=0.8, help="test/train dataset split percentage")
+parser.add_argument("--parameterC", type=int, default=2, help="num of clients randomly selected to participate in Federated Learning")
+parser.add_argument("--hidden_channels", type=int, default=16, help="size of GNN hidden layer")
+parser.add_argument("--learning_rate", type=int, default=0.01, help="learning rate for training")
+parser.add_argument("--epochs", type=int, default=20, help="epochs for training")
+parser.add_argument("--federated_rounds", type=int, default=30, help="federated rounds performed")
 
-#Create Train/Test masks
+args = parser.parse_args()
+
+
+global_graph, num_of_features, num_of_classes = load_data(args)
+
+communities = split_communities(global_graph, args.clients)
+
+client_list = create_clients(communities)
+
+
+#Initialize Clients Models - Create Train/Test masks
 from helpers import simple_train_test_split
-Client1 = simple_train_test_split(Client1, 0.7)
-Client2 = simple_train_test_split(Client2, 0.7)
-Client3 = simple_train_test_split(Client3, 0.7)
+for i in range(len(client_list)):
+    client_list[i].initialize(args.hidden_channels, args.learning_rate, num_of_features, num_of_classes)
+    client_list[i] = simple_train_test_split(client_list[i], args.split)
+
 
 
 #Create and initialize Aggregation Server
 from Server import Aggregation_Server
 MyServer = Aggregation_Server()
-MyServer.set_model(copy.deepcopy(model))
+MyServer.initialize(num_of_features, num_of_classes, args.hidden_channels)
 
 #Create and initialize Security Machine
 from SecMachine import SecMachine
-MyMachine = SecMachine(nx.to_numpy_matrix(prim))
-MyMachine.add_secure_client(Client1)
-MyMachine.add_secure_client(Client2)
-MyMachine.add_secure_client(Client3)
-MyMachine.find_connections(1,2)
-MyMachine.find_connections(1,3)
-MyMachine.find_connections(2,1)
-MyMachine.find_connections(2,3)
-MyMachine.find_connections(3,1)
-MyMachine.find_connections(3,2)
+MyMachine = SecMachine(nx.to_numpy_matrix(global_graph))
+for j in range(len(client_list)):
+    MyMachine.add_secure_client(client_list[j])
 
-res=0
-localdraw1 = []
-localdraw2 = []
-localdraw3 = []
+for k in range(1, len(client_list)+1):
+    for l in range(1, len(client_list)+1):
+        if k!=l:
+            MyMachine.find_connections(k,l)
+
+# res=0
+# localdraw1 = []
+# localdraw2 = []
+# localdraw3 = []
 serverdraw = []
 #Federated Learning
-for round in range(10):
+for round in range(args.federated_rounds+1):
     #Train Local Models
-    Client1.train_local_model(epochs=50, machine = MyMachine)
-    Client2.train_local_model(epochs=50, machine = MyMachine)
-    Client3.train_local_model(epochs=50, machine = MyMachine)
+    for x in range(len(client_list)):
+        client_list[x].train_local_model(epochs=args.epochs+1, machine = MyMachine)
 
     # if round == 0:
     #     res = (tester(Client2.model, Client1, MyMachine) +tester(Client2.model, Client2, MyMachine) + tester(Client2.model, Client3, MyMachine))/3
@@ -63,26 +71,39 @@ for round in range(10):
     # else:
     #     localdraw1.append(res)
 
-    localdraw1.append(tester(Client1.model, Client1, MyMachine))
-    localdraw2.append(tester(Client2.model, Client2, MyMachine))
-    localdraw3.append(tester(Client3.model, Client3, MyMachine))
+    # localdraw1.append(tester(Client1.model, Client1, MyMachine))
+    # localdraw2.append(tester(Client2.model, Client2, MyMachine))
+    # localdraw3.append(tester(Client3.model, Client3, MyMachine))
 
-    #FedAvg Local Models on Server
-    Client1.model, Client2.model, Client3.model= MyServer.perform_fed_avg(Client1.model, Client2.model, Client3.model)
+    #FedAvg Local Models on Server based on parameter C
+    client_list= MyServer.perform_fed_avg(client_list, args.parameterC)
 
     #Test Server Model on every clients data
-    server_acc = (tester(MyServer.model, Client1, MyMachine) +tester(MyServer.model, Client2, MyMachine) + tester(MyServer.model, Client3, MyMachine))/3
-    print("Server Accuracy")
-    print(server_acc.item())
-    serverdraw.append(server_acc.item())
+    server_acc = 0
+    server_f1 = 0
+    server_precision = 0
+    server_recall = 0
+    for y in range(len(client_list)):
+        accuracy, f1, precision, recall = tester(MyServer.model, client_list[y], MyMachine)
+        server_acc = server_acc + accuracy
+        server_f1 = server_f1 + f1
+        server_precision = server_precision + precision
+        server_recall = server_recall + recall
+    server_acc = server_acc/args.clients
+    print(f'+++ Final Results on Server - Round {round} +++')
+    print(f'Server Accuracy: {server_acc}')
+    print(f"F1 Score:{server_f1/args.clients:.4f}")
+    print(f"Precision:{server_precision/args.clients:.4f}")
+    print(f"Recall:{server_recall/args.clients:.4f}")
+    serverdraw.append(server_acc)
 
 #print(res)
 plt.figure(figsize=(10,5))
 plt.title("Testing Accuracy per Federated Round")
 #plt.title("Federated vs Centralized Learning")
-plt.plot(localdraw1,label="Client1")
-plt.plot(localdraw2,label="Client2")
-plt.plot(localdraw3,label="Client3")
+# plt.plot(localdraw1,label="Client1")
+# plt.plot(localdraw2,label="Client2")
+# plt.plot(localdraw3,label="Client3")
 plt.plot(serverdraw,label="Server")
 plt.xlabel("Federated Round")
 plt.ylabel("Accuracy")

@@ -1,14 +1,19 @@
-from ast import Return
-from torch_geometric.datasets import KarateClub, Planetoid, BAShapes
-from torch_geometric.transforms import NormalizeFeatures
+from torch_geometric.datasets import Planetoid
+import torch_geometric.transforms as T
 from torch_geometric.utils import to_networkx
 import networkx as nx
 
-def load_data():
+def load_data(args):
     #Import and Examine Dataset
-    dataset = Planetoid(root='data/Planetoid', name='Cora', transform=NormalizeFeatures())
-    #dataset = BAShapes(connection_distribution='uniform')
-    #dataset = KarateClub()
+    if args.dataset.lower() == 'pubmed':
+        dataset = Planetoid(root='data/Planetoid', name='PubMed', transform=T.LargestConnectedComponents())
+    elif args.dataset.lower() == 'cora':
+        dataset = Planetoid(root='data/Planetoid', name='Cora', transform=T.LargestConnectedComponents())
+    elif args.dataset.lower() == 'citeseer':
+        dataset = Planetoid(root='data/Planetoid', name='CiteSeer',transform=T.LargestConnectedComponents())
+    else:
+        print("No such dataset!")
+        exit()
 
     print(f'Dataset: {dataset}:')
     print('======================')
@@ -25,26 +30,26 @@ def load_data():
     print(f'Number of nodes: {data.num_nodes}')
     print(f'Number of edges: {data.num_edges}')
     G = to_networkx(data, to_undirected=True, node_attrs=['x','y'])
-    Gcc = sorted(nx.connected_components(G), key=len, reverse=True)
-    G0 = G.subgraph(Gcc[0])
-    return G0, dataset.num_features, dataset.num_classes, G0.number_of_nodes(), G
+    return G, dataset.num_features, dataset.num_classes
 
-def split_communities(G):
-    communities = sorted(nx.community.asyn_fluidc(G, 3, max_iter = 5000, seed= 12345))
-
+def split_communities(G, clients):
+    communities = sorted(nx.community.asyn_fluidc(G, clients, max_iter = 5000, seed= 12345))
+    comm = []
     node_groups = []
     for com in communities:
         node_groups.append(list(com))   
 
-    C1 = G.subgraph(node_groups[0]).copy()
-    C2 = G.subgraph(node_groups[1]).copy()
-    C3 = G.subgraph(node_groups[2]).copy()
+    for k in range(len(node_groups)):
+        C = G.subgraph(node_groups[k]).copy()
+        comm.append(C)
 
-    return C1, C2, C3
+    return comm
 
 from Client import Client
-def create_clients(G1,G2,G3):
-    Client1 = Client(1,nx.to_numpy_matrix(G1),nx.get_node_attributes(G1, "x"),nx.get_node_attributes(G1, "y"))
-    Client2 = Client(2,nx.to_numpy_matrix(G2),nx.get_node_attributes(G2, "x"),nx.get_node_attributes(G2, "y"))
-    Client3 = Client(3,nx.to_numpy_matrix(G3),nx.get_node_attributes(G3, "x"),nx.get_node_attributes(G3, "y"))
-    return Client1, Client2, Client3
+def create_clients(comm):
+    client_list = []
+    for z in range(len(comm)):
+        Cl = Client(z+1,nx.to_numpy_matrix(comm[z]),nx.get_node_attributes(comm[z], "x"),nx.get_node_attributes(comm[z], "y"))
+        client_list.append(Cl)
+    print(f'Created {len(client_list)} clients!')
+    return client_list

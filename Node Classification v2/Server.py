@@ -1,17 +1,23 @@
+from model import GCN
+from random import sample
+
 class Aggregation_Server:
     def __init__(self):
         self.model = None
         self.optimizer = None
 
-    def set_model(self,model):
-        self.model = model
+    def initialize(self,num_of_features, num_of_classes, hidden_channels):
+        self.model = GCN(nfeat=num_of_features, nhid=hidden_channels, nclass=num_of_classes, dropout=0.5)
 
-    def perform_fed_avg(self, model1, model2, model3):
-        print("Server Aggregation")
-        for param_tensor in model1.state_dict():
-            avg = (model1.state_dict()[param_tensor] + model2.state_dict()[param_tensor] + model3.state_dict()[param_tensor])/3
+    def perform_fed_avg(self, client_list, parameterC):
+        print("Server Aggregation - IDs Participating:", end=" ")
+        client_list2 = sample(client_list, parameterC)
+        for n in client_list2:
+            print(n.id, end=" ")
+        print("\n")
+        for param_tensor in client_list2[0].model.state_dict():
+            avg = (sum(c.model.state_dict()[param_tensor] for c in client_list2))/len(client_list2)
             self.model.state_dict()[param_tensor].copy_(avg)
-            model1.state_dict()[param_tensor].copy_(avg)
-            model2.state_dict()[param_tensor].copy_(avg)
-            model3.state_dict()[param_tensor].copy_(avg)
-        return model1, model2, model3
+            for cl in client_list:
+                cl.model.state_dict()[param_tensor].copy_(avg)
+        return client_list

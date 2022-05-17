@@ -2,6 +2,7 @@ import torch
 import numpy as np
 import torch.nn.functional as F
 from helpers import accuracy
+from model import GCN
 
 class Client:
     def __init__(self, id, A, x, y):
@@ -14,9 +15,9 @@ class Client:
         self.train_mask = None
         self.test_mask = None
 
-    def set_model(self,model):
-        self.model = model
-        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.01, weight_decay=5e-4)
+    def initialize(self, hidden_channels, learning_rate, num_of_features, num_of_classes):
+        self.model = GCN(nfeat=num_of_features, nhid=hidden_channels, nclass=num_of_classes, dropout=0.5)
+        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=learning_rate, weight_decay=5e-4)
 
     def train_local_model(self, epochs, machine):
         labels = torch.tensor(list(self.y.values()))
@@ -30,6 +31,6 @@ class Client:
             acc_train = accuracy(output[self.train_mask], labels[self.train_mask])
             loss_train.backward()
             self.optimizer.step()
-            print('Epoch: {:04d}'.format(epoch+1),'loss_train: {:.4f}'.format(loss_train.item()),'acc_train: {:.4f}'.format(acc_train.item()))
+            #print('Epoch: {:04d}'.format(epoch+1),'loss_train: {:.4f}'.format(loss_train.item()),'acc_train: {:.4f}'.format(acc_train.item()))
         return acc_train.item()
 
