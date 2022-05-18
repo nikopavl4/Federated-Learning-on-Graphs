@@ -1,7 +1,7 @@
 # Quick Start
 
 ```
-python experiments/centralized/moleculenet/molecule_classification_multilabel.py
+python graph_classification.py  --model --dataset --split --batch_size --hidden_channels --learning_rate --epochs
 ```
 
 ## Parameters
