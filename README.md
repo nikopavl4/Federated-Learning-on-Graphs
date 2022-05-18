@@ -9,9 +9,18 @@ We studied the following Graph Learning tasks on both centralized and federated 
 ## Datasets
 Datasets used:
 - **Graph Classification**
+
 | Dataset |                                              # of Graphs  | # of Classes | # of Features | Avg # of Nodes
 | ------ | ------------------------------------------- | ------------ | ------------ | --------------|---------------|
-| [ENZYMES](https://paperswithcode.com/dataset/enzymes)| 600 (6*100)  |        6     |         3     |       32.6    |
+
+
+
+| [ENZYMES](https://paperswithcode.com/dataset/enzymes)| 600 (6*100)          6     |         3     |       32.6    |
+
+
+
+
+
 | [PROTEINS](https://paperswithcode.com/dataset/proteins) | 600 (6*100) | 6 | 3 | 32.6 |
 | [MUTAG](https://paperswithcode.com/dataset/mutag) | 600 (6*100) | 6 | 3 | 32.6 |
 
