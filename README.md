@@ -1,28 +1,18 @@
-# Federated-Learning-on-Graphs
-Codes about Graph Neural Networks and Federated Learning
+# Introduction
+A collection of experiments/examples for Graph Neural Networks and Federated Learning using Python Libraries PyTorch, PyTorch Geometric and NetworkX. In node Classification v2, there is an attempt to develop a secure framework for performing Federated Learning in a Node Classification Setting with no overlaps between clients' nodes using Fully Homomorphic Encryption to protect feature vectors privacy. In current repository, we have developed the baseline of the aforementioned framework, while more specific alternations concerning privacy protection will be added later. More documentation can be found under each specific subfolder. 
 
-## Simple Federated GCN - Graph Classification
-A very first example of a federated setup using a Graph Convolution Network.
-We use [ENZYMES dataset](https://paperswithcode.com/dataset/enzymes) that contains 600 graphs and 6 labels. Our task is Graph Classification.
+## Machine Learning Tasks
+We studied the following Graph Learning tasks on both centralized and federated setting with multiple variations:
+- Graph Classification
+- Node Classification
 
-**Centralized Experiment**
+## Datasets
+Datasets used:
+- **Graph Classification**
+- - [ENZYMES](https://paperswithcode.com/dataset/enzymes)
+- - PROTEINS
+- - MUTAG
+- Node Classification
 
-- Training Set: 500 graphs
-
-- Testing Set: 100 graphs
-
-Results after 70 epochs of training:
-
-![Centralized Results](/result_images/centralized_experiment1.png)
-
-**Federated Experiment**
-
-- Clients: 3
-
-- Training Set: 150 graphs/per client
-
-- Testing Set: 150 graphs
-
-Results after 10 federated rounds:
 
 ![Centralized Results](/result_images/federated_experiment1.png)
