@@ -1,5 +1,5 @@
 ### A federated learning Example-Setting for Node Classification using FHE to avoid data leakage between Clients
-import torch, copy,random
+import torch,random
 import networkx as nx
 import matplotlib.pyplot as plt
 import argparse

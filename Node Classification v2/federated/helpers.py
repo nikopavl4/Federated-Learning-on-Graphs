@@ -27,5 +27,5 @@ def tester(model, Client, machine):
         pred = output.argmax(dim=1)
         f1 = f1_score(y_true = labels[Client.test_mask],y_pred = pred[Client.test_mask], average='macro')
         precision = precision_score(y_true = labels[Client.test_mask],y_pred = pred[Client.test_mask], average='macro', zero_division=1)
-        recall = recall_score(y_true = labels[Client.test_mask],y_pred = pred[Client.test_mask], average='macro')
+        recall = recall_score(y_true = labels[Client.test_mask],y_pred = pred[Client.test_mask], average='macro', zero_division=1)
         return acc_test.item(), f1, precision, recall
