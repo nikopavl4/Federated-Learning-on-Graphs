@@ -6,6 +6,16 @@ python graph_classification.py  --model --dataset --split --batch_size --hidden_
 
 ## Parameters
 
+| Parameter       | Type  | Description                         |
+|-----------------|-------|-------------------------------------|
+| model           | str   | GNN used for training               |
+| dataset         | str   | Dataset used for training           |
+| split           | float | test/train dataset split percentage |
+| batch_size      | int   | input batch size for training       |
+| hidden_channels | int   | size of GNN hidden layer            |
+| learning_rate   | float | learning rate for training          |
+| epochs          | int   | epochs for training                 |
+
 ## Experiments - Results
 
 ### ENZYMES
