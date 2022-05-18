@@ -26,5 +26,3 @@ Datasets used:
 | [CiteSeer](https://paperswithcode.com/dataset/citeseer) | 1           | 6            | 3703          | 3327       |
 | [PubMed](https://paperswithcode.com/dataset/pubmed)   | 1           | 3            | 500           | 19717      |
 
-
-![Centralized Results](/result_images/federated_experiment1.png)
