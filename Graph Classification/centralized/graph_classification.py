@@ -9,12 +9,12 @@ from sklearn.metrics import f1_score, precision_score, recall_score, confusion_m
 
 parser = argparse.ArgumentParser(description='Insert Arguments')
 
-parser.add_argument('--model', type=str, default="sage", help='GNN used in training')
-parser.add_argument("--dataset", type=str, default="PROTEINS", help="dataset used for training")
+parser.add_argument('--model', type=str, default="gcn", help='GNN used in training')
+parser.add_argument("--dataset", type=str, default="proteins", help="dataset used for training")
 parser.add_argument("--split", type=float, default=0.8, help="test/train dataset split percentage")
-parser.add_argument("--batch_size", type=int, default=16, help="input batch size for training (default: 16)")
-parser.add_argument("--hidden_channels", type=int, default=16, help="size of GNN hidden layer")
-parser.add_argument("--learning_rate", type=float, default=0.01, help="learning rate for training")
+parser.add_argument("--batch_size", type=int, default=32, help="input batch size for training (default: 16)")
+parser.add_argument("--hidden_channels", type=int, default=32, help="size of GNN hidden layer")
+parser.add_argument("--learning_rate", type=float, default=0.001, help="learning rate for training")
 parser.add_argument("--epochs", type=int, default=150, help="epochs for training")
 
 args = parser.parse_args()
