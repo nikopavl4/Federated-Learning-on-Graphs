@@ -59,6 +59,9 @@ python graph_classification.py  --model --dataset --split --batch_size --hidden_
 
 ## Diagrams
 
+<center>
 #### Centralized_graph_gcn_enzymes_16_16_001_50
 
 <img src="/result_images/Centralized_graph_classification_enzymes/centralized_graph_gcn_enzymes_1.png" height="350">
+  
+</center>
