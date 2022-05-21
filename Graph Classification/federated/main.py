@@ -14,14 +14,18 @@ parser = argparse.ArgumentParser(description='Insert Arguments')
 
 parser.add_argument('--model', type=str, default="gcn", help='GNN used in training')
 parser.add_argument("--dataset", type=str, default="enzymes", help="dataset used for training")
+parser.add_argument("--split", type=float, default="0.8", help="test/train dataset split percentage")
 parser.add_argument("--clients", type=int, default=3, help="number of clients")
-parser.add_argument("--parameterC", type=int, default=3, help="num of clients randomly selected to participate in Federated Learning")
-parser.add_argument("--hidden_channels", type=int, default=16, help="size of GNN hidden layer")
-parser.add_argument("--batch_size", type=int, default=16, help="input batch size for training (default: 16)")
-parser.add_argument("--epochs", type=int, default=20, help="epochs for training")
+parser.add_argument("--parameterC", type=int, default=2, help="num of clients randomly selected to participate in Federated Learning")
+parser.add_argument("--hidden_channels", type=int, default=32, help="size of GNN hidden layer")
+parser.add_argument("--batch_size", type=int, default=32, help="input batch size for training (default: 16)")
+parser.add_argument("--epochs", type=int, default=50, help="epochs for training")
 parser.add_argument("--federated_rounds", type=int, default=30, help="federated rounds performed")
 
 args = parser.parse_args()
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(device)
 
 #Load Dataset
 if args.dataset.lower() == 'enzymes':
@@ -38,8 +42,8 @@ torch.manual_seed(12345)
 dataset = dataset.shuffle()
 
 #Train - Test First Split
-train_dataset = dataset[:int(len(dataset)*0.8)]
-test_dataset = dataset[int(len(dataset)*0.8):]
+train_dataset = dataset[:int(len(dataset)*args.split)]
+test_dataset = dataset[int(len(dataset)*args.split):]
 
 #Train Dataset split to Clients
 startup = 0
@@ -56,6 +60,7 @@ for MyClient in Client_list:
     print(f'Number of Client{MyClient.id} training graphs: {len(MyClient.dataset)}')
     if args.model.lower() == "gcn":
         model = GCN(hidden_channels=args.hidden_channels,dataset=dataset)
+        model.to(device)
         MyClient.set_model(model)
     elif args.model.lower() == "sage":
         model = SAGE(hidden_channels=args.hidden_channels,dataset=dataset)

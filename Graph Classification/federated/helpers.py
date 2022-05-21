@@ -1,5 +1,7 @@
 import torch
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 def trainer(model,optimizer,train_loader):
     criterion = torch.nn.CrossEntropyLoss()
     model.train()

@@ -10,12 +10,12 @@ from sklearn.metrics import f1_score, precision_score, recall_score, confusion_m
 parser = argparse.ArgumentParser(description='Insert Arguments')
 
 parser.add_argument('--model', type=str, default="gcn", help='GNN used in training')
-parser.add_argument("--dataset", type=str, default="proteins", help="dataset used for training")
+parser.add_argument("--dataset", type=str, default="enzymes", help="dataset used for training")
 parser.add_argument("--split", type=float, default=0.8, help="test/train dataset split percentage")
-parser.add_argument("--batch_size", type=int, default=32, help="input batch size for training (default: 16)")
-parser.add_argument("--hidden_channels", type=int, default=32, help="size of GNN hidden layer")
-parser.add_argument("--learning_rate", type=float, default=0.001, help="learning rate for training")
-parser.add_argument("--epochs", type=int, default=150, help="epochs for training")
+parser.add_argument("--batch_size", type=int, default=16, help="input batch size for training (default: 16)")
+parser.add_argument("--hidden_channels", type=int, default=16, help="size of GNN hidden layer")
+parser.add_argument("--learning_rate", type=float, default=0.01, help="learning rate for training")
+parser.add_argument("--epochs", type=int, default=50, help="epochs for training")
 
 args = parser.parse_args()
 
@@ -109,6 +109,7 @@ for epoch in range(1, args.epochs + 1):
     train_losses.append(train_acc)
     val_losses.append(test_acc)
     print(f'Epoch: {epoch:03d}, Train Acc: {train_acc:.4f}, Test Acc: {test_acc:.4f}')
+
 
 #Printing final results
 print(f"Accuracy:{test_acc:.4f}")
