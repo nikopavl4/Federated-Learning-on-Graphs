@@ -1,6 +1,7 @@
 from helpers import tester
 import random
 from random import sample
+from sklearn.metrics import f1_score, precision_score, recall_score
 random.seed(12345)
 
 def perform_federated_round(server_model,Client_list,round_id,test_loader, args):
@@ -14,5 +15,14 @@ def perform_federated_round(server_model,Client_list,round_id,test_loader, args)
     test_acc_server = tester(server_model,test_loader)
     print(f'##Round ID={round_id}')
     print(f'Test Acc: {test_acc_server:.4f}')
+    for data in test_loader:
+        out = server_model(data.x, data.edge_index, data.batch)  
+        pred = out.argmax(dim=1)
+        f1 = f1_score(y_true = data.y,y_pred = pred, average='macro', zero_division=1)
+        precision = precision_score(y_true = data.y,y_pred = pred, average='macro', zero_division=1)
+        recall = recall_score(y_true = data.y,y_pred = pred, average='macro', zero_division=1)
+    # print(f"F1 Score:{f1:.4f}")
+    # print(f"Precision:{precision:.4f}")
+    # print(f"Recall:{recall:.4f}")
 
-    return test_acc_server
+    return test_acc_server, f1, precision, recall

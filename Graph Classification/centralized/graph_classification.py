@@ -4,18 +4,20 @@ import torch_geometric.transforms as T
 import argparse
 from models.gcn import GCN
 from models.sage import SAGE
-from sklearn.metrics import f1_score, precision_score, recall_score, confusion_matrix
-
+from sklearn.metrics import f1_score, precision_score, recall_score, confusion_matrix, ConfusionMatrixDisplay
+import time
+# get the start time
+st = time.time()
 
 parser = argparse.ArgumentParser(description='Insert Arguments')
 
 parser.add_argument('--model', type=str, default="gcn", help='GNN used in training')
 parser.add_argument("--dataset", type=str, default="enzymes", help="dataset used for training")
 parser.add_argument("--split", type=float, default=0.8, help="test/train dataset split percentage")
-parser.add_argument("--batch_size", type=int, default=16, help="input batch size for training (default: 16)")
-parser.add_argument("--hidden_channels", type=int, default=16, help="size of GNN hidden layer")
-parser.add_argument("--learning_rate", type=float, default=0.01, help="learning rate for training")
-parser.add_argument("--epochs", type=int, default=50, help="epochs for training")
+parser.add_argument("--batch_size", type=int, default=64, help="input batch size for training (default: 16)")
+parser.add_argument("--hidden_channels", type=int, default=64, help="size of GNN hidden layer")
+parser.add_argument("--learning_rate", type=float, default= 0.001, help="learning rate for training")
+parser.add_argument("--epochs", type=int, default=150, help="epochs for training")
 
 args = parser.parse_args()
 
@@ -126,9 +128,15 @@ print(f"F1 Score:{f1:.4f}")
 print(f"Precision:{precision:.4f}")
 print(f"Recall:{recall:.4f}")
 
+# get the end time
+et = time.time()
+# get the execution time
+elapsed_time = et - st
+print('Execution time:', elapsed_time, 'seconds')
 
-
-
+#Plot Diagrams
+ConfusionMatrixDisplay.from_predictions(y_true = data.y,y_pred = pred, cmap=plt.cm.Blues) 
+plt.show()
 plt.figure(figsize=(10,5))
 plt.title("Training and Testing Accuracy")
 plt.plot(val_losses,label="Test")

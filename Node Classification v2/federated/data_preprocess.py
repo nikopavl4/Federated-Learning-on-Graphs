@@ -3,12 +3,13 @@ import torch_geometric.transforms as T
 from torch_geometric.utils import to_networkx
 import networkx as nx
 
+
 def load_data(args):
     #Import and Examine Dataset
     if args.dataset.lower() == 'pubmed':
-        dataset = Planetoid(root='data/Planetoid', name='PubMed', transform=T.LargestConnectedComponents())
+        dataset = Planetoid(root='data/Planetoid', name='PubMed', transform=T.Compose([T.LargestConnectedComponents(),T.SVDFeatureReduction(20)]))
     elif args.dataset.lower() == 'cora':
-        dataset = Planetoid(root='data/Planetoid', name='Cora', transform=T.LargestConnectedComponents())
+        dataset = Planetoid(root='data/Planetoid', name='Cora',  transform=T.Compose([T.LargestConnectedComponents(),T.SVDFeatureReduction(20)]))
     elif args.dataset.lower() == 'citeseer':
         dataset = Planetoid(root='data/Planetoid', name='CiteSeer',transform=T.LargestConnectedComponents())
     else:

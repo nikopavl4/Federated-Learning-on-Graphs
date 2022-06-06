@@ -8,7 +8,6 @@ from sklearn.metrics import f1_score, precision_score, recall_score, confusion_m
 import matplotlib.pyplot as plt
 import optuna
 
-
 parser = argparse.ArgumentParser(description='Insert Arguments')
 
 parser.add_argument('--model', type=str, default="gcn", help='GNN used in training')
@@ -103,23 +102,35 @@ def objective(trial):
         for data in loader:  # Iterate in batches over the training/test dataset.
             out = model(data.x, data.edge_index, data.batch)  
             pred = out.argmax(dim=1)  # Use the class with highest probability.
+            f1 = f1_score(y_true = data.y,y_pred = pred, average='macro', zero_division=1)
+            precision = precision_score(y_true = data.y,y_pred = pred, average='macro', zero_division=1)
+            recall = recall_score(y_true = data.y,y_pred = pred, average='macro', zero_division=1)
             correct += int((pred == data.y).sum())  # Check against ground-truth labels.
-        return correct / len(loader.dataset)  # Derive ratio of correct predictions.
+        return correct / len(loader.dataset), f1,precision, recall  # Derive ratio of correct predictions.
 
     #Training and printing results
 
 
     test_accuracies = {}
+    test_f1 = {}
+    test_precision = {}
+    test_recall = {}
     train_accuracies = []
     for epoch in range(1, args.epochs + 1):
         train()
-        train_acc = test(train_loader)
-        test_acc = test(test_loader)
+        train_acc, x, y, z = test(train_loader)
+        test_acc, testf1, testpre, testrec = test(test_loader)
         train_accuracies.append(train_acc)
         test_accuracies[epoch] = test_acc
+        test_f1[epoch] = testf1
+        test_precision[epoch] = testpre
+        test_recall[epoch] = testrec
         #print(f'Epoch: {epoch:03d}, Train Acc: {train_acc:.4f}, Test Acc: {test_acc:.4f}')
 
-    print(max(test_accuracies, key=test_accuracies.get))
+    print(f'Best Epoch = {max(test_accuracies, key=test_accuracies.get)}')
+    print(f'F1 = {test_f1[max(test_accuracies, key=test_accuracies.get)]}')
+    print(f'Precision = {test_precision[max(test_accuracies, key=test_accuracies.get)]}')
+    print(f'Recall = {test_recall[max(test_accuracies, key=test_accuracies.get)]}')
     return max(list(test_accuracies.values()))
 
     #Printing final results
@@ -149,8 +160,8 @@ def objective(trial):
 # plt.legend()
 # plt.show()
 
-study = optuna.create_study(direction="maximize", sampler=optuna.samplers.TPESampler())
-study.optimize(objective, n_trials=20)
+study = optuna.create_study(direction="maximize", sampler=optuna.samplers.TPESampler(seed=12345))
+study.optimize(objective, n_trials=10)
 
 best_f = study.best_value
 print(best_f)
