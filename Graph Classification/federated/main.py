@@ -15,7 +15,7 @@ st = time.time()
 
 parser = argparse.ArgumentParser(description='Insert Arguments')
 
-parser.add_argument('--model', type=str, default="sage", help='GNN used in training')
+parser.add_argument('--model', type=str, default="gcn", help='GNN used in training')
 parser.add_argument("--dataset", type=str, default="enzymes", help="dataset used for training")
 parser.add_argument("--split", type=float, default="0.8", help="test/train dataset split percentage")
 parser.add_argument("--clients", type=int, default=3, help="number of clients")
@@ -23,8 +23,8 @@ parser.add_argument("--parameterC", type=int, default=3, help="num of clients ra
 parser.add_argument("--hidden_channels", type=int, default=32, help="size of GNN hidden layer")
 parser.add_argument("--batch_size", type=int, default=32, help="input batch size for training (default: 16)")
 parser.add_argument("--learning_rate", type=float, default=0.01, help="learning rate for optimizer")
-parser.add_argument("--epochs", type=int, default=3, help="epochs for training")
-parser.add_argument("--federated_rounds", type=int, default=3, help="federated rounds performed")
+parser.add_argument("--epochs", type=int, default=70, help="epochs for training")
+parser.add_argument("--federated_rounds", type=int, default=30, help="federated rounds performed")
 
 args = parser.parse_args()
 
@@ -211,7 +211,7 @@ for i in range(args.clients):
     plt.title(f"Accuracy on global test set per Federated Round / Client {i}")
     plt.plot(client_global_acc_per_round[i],label="Federated")
     plt.plot(list(client_global_acc_per_round[i][:1])*args.federated_rounds,label="Centralized")
-    plt.xlabel("Round")
+    plt.xlabel("Federated Round")
     plt.ylabel("Accuracy")
     plt.legend()
     filename = os.path.join(dirname, f'Result_Plots/{args.dataset}_{args.model}_{num_cl}_{param_c}_global_test_set_client_{i}.png')
@@ -221,17 +221,21 @@ for i in range(args.clients):
     plt.title(f"Accuracy on Other Client's Private Data per Federated Round / Client {i}")
     plt.plot(inter_client_accuracy_per_round[i],label="Federated")
     plt.plot(list(inter_client_accuracy_per_round[i][:1])*args.federated_rounds,label="Centralized")
-    plt.xlabel("Round")
+    plt.xlabel("Federated Round")
     plt.ylabel("Accuracy")
+    plt.legend()
     filename = os.path.join(dirname, f'Result_Plots/{args.dataset}_{args.model}_{num_cl}_{param_c}_inter_client_testing_client_{i}.png')
     plt.savefig(filename)
 
 
 plt.figure(figsize=(10,5))
-plt.title("Server Accuracy per Federated Round")
-plt.plot(server_accuracy_per_round.values())
-plt.xlabel("Round")
+plt.title("Accuracy on Test set per Federated Round")
+plt.plot(server_accuracy_per_round.values(), label="server")
+for i in range(args.clients):
+    plt.plot(client_global_acc_per_round[i], label=f'client {i}')
+plt.xlabel("Federated Round")
 plt.ylabel("Accuracy")
-filename = os.path.join(dirname, f'Result_Plots/{args.dataset}_{args.model}_{num_cl}_{param_c}_server_accuracy_round.png')
+plt.legend()
+filename = os.path.join(dirname, f'Result_Plots/{args.dataset}_{args.model}_{num_cl}_{param_c}_accuracy_per_round.png')
 plt.savefig(filename)
 
