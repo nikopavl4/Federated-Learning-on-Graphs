@@ -7,7 +7,7 @@ from models.sage import SAGE
 from Client import Client
 import argparse
 from helpers import trainer, tester, k_fold, EarlyStopping
-from server import perform_federated_round
+from server import perform_federated_avg
 import os
 import time
 # get the start time
@@ -151,7 +151,7 @@ for round_id in range(1,args.federated_rounds + 1):
         client_global_acc_per_round[MyClient.id].append(global_max)
         inter_client_accuracy_per_round[MyClient.id].append(inter_max)
 
-    server_acc, f1, precision, recall = perform_federated_round(server_model, Client_list,round_id,test_loader, args)
+    server_acc, f1, precision, recall = perform_federated_avg(server_model, Client_list,round_id,test_loader, args)
     server_accuracy_per_round[round_id] = server_acc
     f1_per_round[round_id] = f1
     precision_per_round[round_id] = precision
@@ -238,4 +238,3 @@ plt.ylabel("Accuracy")
 plt.legend()
 filename = os.path.join(dirname, f'Result_Plots/{args.dataset}_{args.model}_{num_cl}_{param_c}_accuracy_per_round.png')
 plt.savefig(filename)
-
