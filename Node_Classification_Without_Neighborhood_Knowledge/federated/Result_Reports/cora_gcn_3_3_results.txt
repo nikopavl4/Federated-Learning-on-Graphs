@@ -1,0 +1,21 @@
+Execution time: 14.11 seconds
+Best Epoch = 6
+Accuracy = 0.8874
+F1 = 0.8050
+Precision = 0.8407
+Recall = 0.7969
+##########
+Client 0
+Best Testing on Private test set: federated;0.8953  centralized;0.8534
+Best Testing on Global test set: federated;0.8467  centralized;0.3834
+Best Testing on others clients test set: federated;0.8381  centralized;0.1536
+##########
+Client 1
+Best Testing on Private test set: federated;0.9301  centralized;0.8763
+Best Testing on Global test set: federated;0.8467  centralized;0.4815
+Best Testing on others clients test set: federated;0.8346  centralized;0.2760
+##########
+Client 2
+Best Testing on Private test set: federated;0.8632  centralized;0.7895
+Best Testing on Global test set: federated;0.8732  centralized;0.5460
+Best Testing on others clients test set: federated;0.8808  centralized;0.4137

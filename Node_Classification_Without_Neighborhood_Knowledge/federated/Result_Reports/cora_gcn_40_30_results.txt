@@ -1,0 +1,206 @@
+Execution time: 273.52 seconds
+Best Epoch = 8
+Accuracy = 0.7668
+F1 = 0.5777
+Precision = 0.7307
+Recall = 0.7430
+##########
+Client 0
+Best Testing on Private test set: federated;1.0000  centralized;1.0000
+Best Testing on Global test set: federated;0.2164  centralized;0.2164
+Best Testing on others clients test set: federated;0.1963  centralized;0.1963
+##########
+Client 1
+Best Testing on Private test set: federated;1.0000  centralized;1.0000
+Best Testing on Global test set: federated;0.4142  centralized;0.2614
+Best Testing on others clients test set: federated;0.4012  centralized;0.2435
+##########
+Client 2
+Best Testing on Private test set: federated;1.0000  centralized;1.0000
+Best Testing on Global test set: federated;0.2160  centralized;0.1638
+Best Testing on others clients test set: federated;0.1959  centralized;0.1423
+##########
+Client 3
+Best Testing on Private test set: federated;1.0000  centralized;1.0000
+Best Testing on Global test set: federated;0.3252  centralized;0.3090
+Best Testing on others clients test set: federated;0.3096  centralized;0.2930
+##########
+Client 4
+Best Testing on Private test set: federated;1.0000  centralized;0.9167
+Best Testing on Global test set: federated;0.4446  centralized;0.3396
+Best Testing on others clients test set: federated;0.4346  centralized;0.3312
+##########
+Client 5
+Best Testing on Private test set: federated;1.0000  centralized;1.0000
+Best Testing on Global test set: federated;0.2164  centralized;0.2164
+Best Testing on others clients test set: federated;0.1963  centralized;0.1963
+##########
+Client 6
+Best Testing on Private test set: federated;0.8889  centralized;0.7778
+Best Testing on Global test set: federated;0.3579  centralized;0.2293
+Best Testing on others clients test set: federated;0.3529  centralized;0.2210
+##########
+Client 7
+Best Testing on Private test set: federated;1.0000  centralized;1.0000
+Best Testing on Global test set: federated;0.5898  centralized;0.4141
+Best Testing on others clients test set: federated;0.5793  centralized;0.3991
+##########
+Client 8
+Best Testing on Private test set: federated;0.9231  centralized;0.8462
+Best Testing on Global test set: federated;0.2570  centralized;0.1770
+Best Testing on others clients test set: federated;0.2419  centralized;0.1598
+##########
+Client 9
+Best Testing on Private test set: federated;1.0000  centralized;1.0000
+Best Testing on Global test set: federated;0.0969  centralized;0.0969
+Best Testing on others clients test set: federated;0.0737  centralized;0.0737
+##########
+Client 10
+Best Testing on Private test set: federated;0.8571  centralized;0.8571
+Best Testing on Global test set: federated;0.3543  centralized;0.3022
+Best Testing on others clients test set: federated;0.3487  centralized;0.2898
+##########
+Client 11
+Best Testing on Private test set: federated;0.9091  centralized;0.9091
+Best Testing on Global test set: federated;0.4598  centralized;0.3702
+Best Testing on others clients test set: federated;0.4553  centralized;0.3610
+##########
+Client 12
+Best Testing on Private test set: federated;0.8750  centralized;0.8750
+Best Testing on Global test set: federated;0.1871  centralized;0.1181
+Best Testing on others clients test set: federated;0.1694  centralized;0.0987
+##########
+Client 13
+Best Testing on Private test set: federated;1.0000  centralized;1.0000
+Best Testing on Global test set: federated;0.3414  centralized;0.2154
+Best Testing on others clients test set: federated;0.3293  centralized;0.1987
+##########
+Client 14
+Best Testing on Private test set: federated;0.8889  centralized;0.7778
+Best Testing on Global test set: federated;0.3733  centralized;0.2705
+Best Testing on others clients test set: federated;0.3687  centralized;0.2646
+##########
+Client 15
+Best Testing on Private test set: federated;1.0000  centralized;0.9000
+Best Testing on Global test set: federated;0.4426  centralized;0.3080
+Best Testing on others clients test set: federated;0.4334  centralized;0.2954
+##########
+Client 16
+Best Testing on Private test set: federated;0.9167  centralized;0.9167
+Best Testing on Global test set: federated;0.4499  centralized;0.3443
+Best Testing on others clients test set: federated;0.4401  centralized;0.3317
+##########
+Client 17
+Best Testing on Private test set: federated;1.0000  centralized;1.0000
+Best Testing on Global test set: federated;0.2821  centralized;0.2421
+Best Testing on others clients test set: federated;0.2663  centralized;0.2239
+##########
+Client 18
+Best Testing on Private test set: federated;1.0000  centralized;1.0000
+Best Testing on Global test set: federated;0.2164  centralized;0.2164
+Best Testing on others clients test set: federated;0.1963  centralized;0.1963
+##########
+Client 19
+Best Testing on Private test set: federated;0.8571  centralized;0.8571
+Best Testing on Global test set: federated;0.3946  centralized;0.2790
+Best Testing on others clients test set: federated;0.3882  centralized;0.2697
+##########
+Client 20
+Best Testing on Private test set: federated;1.0000  centralized;0.8571
+Best Testing on Global test set: federated;0.4828  centralized;0.3501
+Best Testing on others clients test set: federated;0.4732  centralized;0.3389
+##########
+Client 21
+Best Testing on Private test set: federated;1.0000  centralized;1.0000
+Best Testing on Global test set: federated;0.2735  centralized;0.2224
+Best Testing on others clients test set: federated;0.2549  centralized;0.2024
+##########
+Client 22
+Best Testing on Private test set: federated;1.0000  centralized;0.8500
+Best Testing on Global test set: federated;0.2207  centralized;0.1379
+Best Testing on others clients test set: federated;0.2092  centralized;0.1235
+##########
+Client 23
+Best Testing on Private test set: federated;1.0000  centralized;0.8333
+Best Testing on Global test set: federated;0.2547  centralized;0.2164
+Best Testing on others clients test set: federated;0.2398  centralized;0.2006
+##########
+Client 24
+Best Testing on Private test set: federated;1.0000  centralized;0.9286
+Best Testing on Global test set: federated;0.2318  centralized;0.2182
+Best Testing on others clients test set: federated;0.2140  centralized;0.2018
+##########
+Client 25
+Best Testing on Private test set: federated;1.0000  centralized;1.0000
+Best Testing on Global test set: federated;0.3207  centralized;0.2610
+Best Testing on others clients test set: federated;0.3033  centralized;0.2421
+##########
+Client 26
+Best Testing on Private test set: federated;0.6667  centralized;0.5000
+Best Testing on Global test set: federated;0.2852  centralized;0.2054
+Best Testing on others clients test set: federated;0.2839  centralized;0.2022
+##########
+Client 27
+Best Testing on Private test set: federated;0.7000  centralized;0.7000
+Best Testing on Global test set: federated;0.4957  centralized;0.3873
+Best Testing on others clients test set: federated;0.4930  centralized;0.3818
+##########
+Client 28
+Best Testing on Private test set: federated;1.0000  centralized;1.0000
+Best Testing on Global test set: federated;0.4032  centralized;0.3041
+Best Testing on others clients test set: federated;0.3879  centralized;0.2905
+##########
+Client 29
+Best Testing on Private test set: federated;0.8333  centralized;0.7778
+Best Testing on Global test set: federated;0.3098  centralized;0.1574
+Best Testing on others clients test set: federated;0.2992  centralized;0.1429
+##########
+Client 30
+Best Testing on Private test set: federated;0.9474  centralized;0.8947
+Best Testing on Global test set: federated;0.1165  centralized;0.1165
+Best Testing on others clients test set: federated;0.0966  centralized;0.0966
+##########
+Client 31
+Best Testing on Private test set: federated;1.0000  centralized;1.0000
+Best Testing on Global test set: federated;0.2091  centralized;0.1563
+Best Testing on others clients test set: federated;0.1888  centralized;0.1346
+##########
+Client 32
+Best Testing on Private test set: federated;0.8824  centralized;0.8824
+Best Testing on Global test set: federated;0.1549  centralized;0.1123
+Best Testing on others clients test set: federated;0.1378  centralized;0.0941
+##########
+Client 33
+Best Testing on Private test set: federated;1.0000  centralized;0.9444
+Best Testing on Global test set: federated;0.2624  centralized;0.2624
+Best Testing on others clients test set: federated;0.2449  centralized;0.2449
+##########
+Client 34
+Best Testing on Private test set: federated;0.7500  centralized;0.7500
+Best Testing on Global test set: federated;0.4160  centralized;0.3415
+Best Testing on others clients test set: federated;0.4107  centralized;0.3342
+##########
+Client 35
+Best Testing on Private test set: federated;0.9091  centralized;0.9091
+Best Testing on Global test set: federated;0.4402  centralized;0.3144
+Best Testing on others clients test set: federated;0.4305  centralized;0.3003
+##########
+Client 36
+Best Testing on Private test set: federated;0.9444  centralized;0.8333
+Best Testing on Global test set: federated;0.1271  centralized;0.1060
+Best Testing on others clients test set: federated;0.1090  centralized;0.0888
+##########
+Client 37
+Best Testing on Private test set: federated;0.9091  centralized;0.9091
+Best Testing on Global test set: federated;0.2385  centralized;0.2204
+Best Testing on others clients test set: federated;0.2236  centralized;0.2050
+##########
+Client 38
+Best Testing on Private test set: federated;1.0000  centralized;0.9444
+Best Testing on Global test set: federated;0.4982  centralized;0.4522
+Best Testing on others clients test set: federated;0.4882  centralized;0.4410
+##########
+Client 39
+Best Testing on Private test set: federated;0.9487  centralized;0.9231
+Best Testing on Global test set: federated;0.2991  centralized;0.2769
+Best Testing on others clients test set: federated;0.2844  centralized;0.2617
