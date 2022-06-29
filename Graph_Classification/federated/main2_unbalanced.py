@@ -46,19 +46,22 @@ dataset = dataset.shuffle()
 train_dataset = dataset[:int(len(dataset)*args.split)]
 test_dataset = dataset[int(len(dataset)*args.split):]
 
-#Train Dataset split to Clients
+#Train Dataset split to Clients - Unbalanced way
 startup = 0
 Client_list = []
-division = int(len(train_dataset)/args.clients)
-print(division)
+division1 = int(len(train_dataset)*0.6)
+division2 = int(len(train_dataset)*0.3)
+division3 = int(len(train_dataset)*0.1)
+divisions = [division1, division2, division3]
+
 for i in range(args.clients):
-    client_data = train_dataset[startup:division+startup]
+    client_data = train_dataset[startup:divisions[i]+startup]
     client_data = client_data.copy()
     print(client_data.data)
     #new_loader = DataLoader(client_data, batch_size=args.batch_size, shuffle=True)
     New_Client = Client(i,client_data)
     Client_list.append(New_Client)
-    startup = startup + division
+    startup = startup + divisions[i]
 
 #Create and append GNN Model to every client
 for MyClient in Client_list:
